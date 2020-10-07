@@ -52,8 +52,8 @@ export default {
   data () {
     return {
       user: {
-        mobile: '', // 手机号
-        code: '', // 验证码
+        mobile: '13911111111', // 手机号
+        code: '246810', // 验证码
         agree: false // 这是判断协议复选框
       },
       // checked: false, // 这是协议复选框
@@ -113,6 +113,7 @@ export default {
         })
         // 登录成功关闭loading也有禁多次点击的作用
         this.loginLoading = false
+        this.$router.push('/')
       }).catch(err => {
         this.$message.error('手机号或验证码出错了')
         // 登录失败关闭loading也有禁多次点击的作用
