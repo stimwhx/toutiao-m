@@ -107,12 +107,15 @@ export default {
       this.loginLoading = true
       // 验证通过提交登录
       login(this.user).then(res => {
+        console.log(res)
         this.$message({
           message: '恭喜你，登录成功',
           type: 'success'
         })
         // 登录成功关闭loading也有禁多次点击的作用
         this.loginLoading = false
+        // 把登录成功的数据存储在本地，可以通过控制能的Application标签下的 Local Strorage看到。
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
         this.$router.push('/')
       }).catch(err => {
         this.$message.error('手机号或验证码出错了')

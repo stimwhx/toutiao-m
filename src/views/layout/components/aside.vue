@@ -7,6 +7,7 @@
     text-color="#fff"
     active-text-color="#ffd04b"
     router
+    :collapse="isCollapse"
   >
     <div class="aside_header"></div>
     <el-menu-item index="/">
@@ -15,7 +16,7 @@
     </el-menu-item>
     <el-menu-item index="/article">
       <i class="iconfont iconarticle"></i>
-      <span slot="title">文章</span>
+      <span slot="title">内容管理</span>
     </el-menu-item>
     <el-menu-item index="/image">
       <i class="iconfont iconimage"></i>
@@ -44,7 +45,8 @@
 export default {
   name: 'AppAside',
   components: {},
-  props: {},
+  // 引用时，要把is-collapse写成isCollapse
+  props: ['is-collapse'],
   data () {
     return {}
   },

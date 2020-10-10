@@ -13,12 +13,12 @@ export const login = data => {
 }
 // 获取用户信息
 export const gerUserProfile = () => {
+  // const user = JSON.parse(window.localStorage.getItem('user'))
   return request({
     method: 'GET',
-    url: '/mp/v1_0/user/profile',
+    url: '/mp/v1_0/user/profile'
     // asios通过headers：{}对象来设置请求头
-    headers: {
-      Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzM1MzAwNzgsInVzZXJfaWQiOjEsInJlZnJlc2giOmZhbHNlLCJ2ZXJpZmllZCI6dHJ1ZX0.bQGitxvtnW0LmJ1Kw5ZyzH1jieVqAS_a7l6eS2RBuw8'
-    }
+    // headers: {// Authorization: `Bearer ${user.token}`
+    // }
   })
 }

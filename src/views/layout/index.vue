@@ -2,14 +2,23 @@
   <el-container class="layout-container">
     <el-aside
       class="aside"
-      width="200px"
+      width="auto"
     >
-      <app-aside class="aside_memu"/>
+      <app-aside
+        class="aside_memu"
+        :is-collapse = "isCollapse"
+      />
     </el-aside>
     <el-container>
       <el-header class="header">
         <div>
-          <i class="el-icon-s-fold"></i>
+          <i
+            :class="{
+              'el-icon-s-fold': isCollapse,
+              'el-icon-s-unfold': !isCollapse
+            }"
+            @click="isCollapse = !isCollapse"
+          ></i>
           <span>江苏传智播客科技教育有限公司</span>
         </div>
         <el-dropdown>
@@ -19,8 +28,11 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item class="iconfont icongerenzhongxin">个人中心</el-dropdown-item>
-            <el-dropdown-item class="iconfont iconSettingscontroloptions">设置</el-dropdown-item>
+            <el-dropdown-item>设置</el-dropdown-item>
+            <!-- 如果组件不能响应原生事件上。我们就在事件后面加一个.native -->
+            <el-dropdown-item
+              @click.native="onLogout"
+            >退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-header>
@@ -42,7 +54,9 @@ export default {
   props: {},
   data () {
     return {
-      user: {}
+      user: {},
+      // 控制侧边工具栏的展开与收起
+      isCollapse: false
     }
   },
   computed: {},
@@ -57,6 +71,23 @@ export default {
     loadUserProfile () {
       gerUserProfile().then(res => {
         this.user = res.data.data
+      })
+    },
+    onLogout () {
+      this.$confirm('退出登录, 是否继续?', '退出提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 退出要把本地的用户存储删除
+        window.localStorage.removeItem('user')
+        // 删除后，我们跳转回登录页面
+        this.$router.push('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
       })
     }
   }
@@ -78,13 +109,13 @@ export default {
   height: 100%;
 }
 .header{
-  background-color: aliceblue;
+  border-bottom-color: black;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .main{
-  background-color: bisque;
+  // background-color: bisque;
 }
 .avatar-wrap{
   display: flex;
