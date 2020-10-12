@@ -1,7 +1,18 @@
 import axios from 'axios'
 // axios可以有不同的实例，不同的实例可以有不同的配置
+import JSONBig from 'json-bigint'
 const request = axios.create({
-  baseURL: 'http://ttapi.research.itcast.cn' // 请求的基础路径
+  baseURL: 'http://ttapi.research.itcast.cn', // 请求的基础路径
+  // 这个就是处理后端返回数据的格式的，因为后端返回的数据都是json的。转换字符串会有问题。所以用json-bigint第三方库
+  transformResponse: [function (data) {
+    try {
+      // 这里是接收的是字符串类开的数据，我们就用这个json-bigint直接转换
+      return JSONBig.parse(data)
+    } catch (err) {
+      // 如果不是字符串，那么不转换。直接返回去
+      return data
+    }
+  }]
 })
 // 请求拦截器 https://github.com/axios/axios 在这里有这个axios的文档 Interceptors
 // 所有的请求都要经过这个axios的拦截器。 这里的config变量，拿到的就是请示的所有数据。是个对象
