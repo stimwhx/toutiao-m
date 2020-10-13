@@ -24,7 +24,7 @@
     </el-menu-item>
     <el-menu-item index="/publish">
       <i class="iconfont iconpublish"></i>
-      <span slot="title">发送</span>
+      <span slot="title">发布内容</span>
     </el-menu-item>
     <el-menu-item index="/comment">
       <i class="iconfont iconcomment"></i>

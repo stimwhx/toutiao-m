@@ -29,3 +29,32 @@ export const deleteArticle = articleId => {
     url: `/mp/v1_0/articles/${articleId}`
   })
 }
+// 发表文章
+export const publisArticle = (data, draft = false) => {
+  return request({
+    method: 'POST',
+    url: '/mp/v1_0/articles',
+    params: {
+      draft
+    },
+    data
+  })
+}
+// 编辑文章（修改）
+export const updateArticle = (articleId, data, draft = false) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/articles/${articleId}`,
+    params: {
+      draft
+    },
+    data
+  })
+}
+// 获取文章
+export const getArticleMethod = (articleId) => {
+  return request({
+    method: 'GET',
+    url: `/mp/v1_0/articles/${articleId}`
+  })
+}

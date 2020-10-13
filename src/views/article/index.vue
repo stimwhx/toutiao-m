@@ -2,10 +2,12 @@
   <div class="article-container">
     <el-card class="filter-card">
       <!--面包屑-->
+      <div slot="header" class="clearfix">
       <el-breadcrumb class="breadcrumb-style" separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>内容管理</el-breadcrumb-item>
       </el-breadcrumb>
+      </div>
       <!-- /面包屑-->
       <!--数据-->
       <el-form
@@ -123,6 +125,7 @@
               circle
               type="primary"
               icon="el-icon-edit"
+              @click="$router.push('/publish?id='+scope.row.id.toString())"
               ></el-button>
             <el-button
               size="mini"
@@ -196,9 +199,6 @@ export default {
   mounted () {
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
-    },
     loadArticles (page = 1) {
       this.loading = true
       getArticle(
@@ -211,6 +211,7 @@ export default {
           end_pubdate: this.rangeDate ? this.rangeDate[1] : null
         }
       ).then(res => {
+        console.log(res)
         // 请求成功后，我们把总页数给到变量
         this.articles = res.data.data.results
         this.articleTotal = res.data.data.total_count

@@ -4,6 +4,7 @@ import Login from '@/views/login'
 import Home from '@/views/home'
 import Layout from '@/views/layout'
 import Article from '@/views/article'
+import Publish from '@/views/publish'
 Vue.use(VueRouter)
 
 const routes = [
@@ -26,8 +27,12 @@ const routes = [
         path: '/article', // 这个path为空时，表示这个路邮为默认路邮
         name: 'article',
         component: Article
+      },
+      {
+        path: '/publish', // 这个path为空时，表示这个路邮为默认路邮
+        name: 'publish',
+        component: Publish
       }
-
     ]
   }
 
