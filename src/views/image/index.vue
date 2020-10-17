@@ -21,7 +21,9 @@
           >上传素材</el-button>
         </div>
         <!--图片列表-->
-        <el-row :gutter="20">
+        <el-row
+          :gutter="10"
+        >
           <!--这里的xs sm md lg别忘了前边加一个：要不会报错-->
           <el-col
             :xs="12"
@@ -30,6 +32,7 @@
             :lg="4"
             v-for = "(img,index) in images"
             :key="index"
+            class="image-item"
           >
             <el-image
               style="height: 100px"
@@ -37,9 +40,39 @@
               fit="cover"
             >
             </el-image>
+            <div class="action-image">
+              <el-button
+                type="warning"
+                :icon="img.is_collected ? 'el-icon-star-off' : 'el-icon-star-on'"
+                circle
+                size="mini"
+                @click="onCollectImage(img)"
+                :loading = img.loading
+              ></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                size="mini"
+                :loading="img.loading"
+                @click="onDeleteImage(img)"
+              ></el-button>
+            </div>
           </el-col>
         </el-row>
         <!--/图片列表-->
+        <!--分页-->
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="totalpage"
+          :current-page.sync="page"
+          :page-size="pagesize"
+          @current-change="onChangeYema"
+          :hide-on-single-page="hideonsinglepage"
+        >
+        </el-pagination>
+        <!--/分页-->
       </el-card>
       <el-dialog
         title="上传素材"
@@ -71,7 +104,11 @@
     </div>
 </template>
 <script>
-import { getImages } from '@/api/image'
+import {
+  getImages,
+  collectImage,
+  deleteImage
+} from '@/api/image'
 export default {
   name: 'ImageIndex',
   components: {},
@@ -85,31 +122,76 @@ export default {
       dialogUploadVisible: false, // 这个是控制点击上传素材按钮弹框展示不展示的。false为不展示，ture为展示
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
-      }
+      },
+      page: 1,
+      totalpage: 0,
+      pagesize: 5,
+      hideonsinglepage: false // 当只有一页时，不展示页码。也判断了，当只有一页，总图片为0时，不展示页码。
     }
   },
   computed: {},
   watch: {},
   created () {
-    this.loadImages(false)
+    this.loadImages(1)
   },
   mounted () {
   },
   methods: {
-    loadImages (collect = false) {
+    loadImages (page = 1) {
+      // 重制页码，防止数据和页码不对应
+      this.page = page
       getImages({
-        collect
+        collect: this.collect,
+        page,
+        per_page: this.pagesize
       }).then(res => {
         console.log(res)
-        this.images = res.data.data.results
+        const result = res.data.data.results
+        result.forEach(img => {
+          // result返回的对象，每一个没有loading的状态，我们手动给每一个返回的数组对象加一个loading变量
+          img.loading = false
+        })
+        this.totalpage = res.data.data.total_count
+        this.images = result
+        // 当只有一页时，不展示页码。也判断了，当只有一页，总图片为0时，不展示页码。
+        if (res.data.data.results.length === 0) {
+          this.hideonsinglepage = true
+        }
       })
     },
-    onCollectChange (value) {
-      this.loadImages(value)
+    onCollectChange () {
+      this.loadImages(1)
     },
     onUpLoadSuccess () {
       this.dialogUploadVisible = false
-      this.loadImages(false)
+      // 因为你上传是不一定在第一页，我们要保证我们在那一页就在那一页上。所以。我们这里是this.page
+      this.loadImages(this.page)
+      // 上传成功后，不一定在我们这一页上显示。因为显示图片的顺序是后台给我们的。所以我们给一个提示
+      this.$message({
+        type: 'success',
+        message: '上传成功'
+      })
+    },
+    onCollectImage (img) {
+      // 图片收藏
+      img.loading = true
+      collectImage(img.id, !img.is_collected).then(res => {
+        img.is_collected = !img.is_collected
+        img.loading = false
+      })
+    },
+    onDeleteImage (img) {
+      // 这里接收的是一个对象，我们取这个对象的id给请求，取这个loading状态给这个按钮
+      img.loading = true
+      // 删除素材
+      deleteImage(img.id).then(res => {
+      // 删除成功后，把loading取消，重新加载页面
+        img.loading = false
+        this.loadImages(this.page)
+      })
+    },
+    onChangeYema (page) {
+      this.loadImages(page)
     }
   }
 }
@@ -120,5 +202,21 @@ export default {
   padding-bottom: 20px;
   display: flex;
   justify-content: space-between;
+}
+.action-image {
+  font-size: 25px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #fff;
+  height: 40px;
+  background-color: rgba(204, 204, 204, .5);
+  position: absolute;
+  bottom: 4px;
+  left: 5px;
+  right: 5px;
+}
+.image-item {
+  position: relative;
 }
 </style>

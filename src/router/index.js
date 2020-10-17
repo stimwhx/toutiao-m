@@ -6,6 +6,8 @@ import Layout from '@/views/layout/'
 import Article from '@/views/article/'
 import Publish from '@/views/publish/'
 import Image from '@/views/image/'
+import Comment from '@/views/comment/'
+import Settings from '@/views/settings/'
 Vue.use(VueRouter)
 
 const routes = [
@@ -38,6 +40,16 @@ const routes = [
         path: '/image', // 这个path为空时，表示这个路邮为默认路邮
         name: 'image',
         component: Image
+      },
+      {
+        path: '/comment', // 这个path为空时，表示这个路邮为默认路邮
+        name: 'comment',
+        component: Comment
+      },
+      {
+        path: '/settings', // 这个path为空时，表示这个路邮为默认路邮
+        name: 'settings',
+        component: Settings
       }
     ]
   }
